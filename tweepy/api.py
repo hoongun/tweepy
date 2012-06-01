@@ -146,11 +146,11 @@ class API(object):
             path = '/statuses/update_with_media.json',
             method = 'POST',
             payload_type = 'status',
-            allowed_param = ['status'],
+            allowed_param = ['status', 'possibly_sensitive', 'in_reply_to_status_id', 'lat', 'long', 'place_id', 'display_coordinates'],
             require_auth = True,
             upload_api = True,
             secure = True
-        )(self, post_data=post_data, headers=headers, status=kargs.get('status', ''))
+        )(self, post_data=post_data, headers=headers, *args, **kargs)
 
     """ statuses/destroy """
     destroy_status = bind_api(
