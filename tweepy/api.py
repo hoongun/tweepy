@@ -22,8 +22,10 @@ class API(object):
         self.auth = auth_handler
         self.host = host
         self.search_host = search_host
+        self.upload_host = upload_host
         self.api_root = api_root
         self.search_root = search_root
+        self.upload_root = upload_root
         self.cache = cache
         self.secure = secure
         self.retry_count = retry_count
