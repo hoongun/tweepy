@@ -701,12 +701,12 @@ class API(object):
 
     """ Internal use only """
     @staticmethod
-    def _pack_image(filename, max_size):
+    def _pack_image(filename, max_size, *args, **kwargs):
         """Pack image from file into multipart-formdata post body"""
         # image must be less than 700kb in size
         try:
             if os.path.getsize(filename) > (max_size * 1024):
-                raise TweepError('File is too big, must be less than 700kb.')
+                raise TweepError('File is too big, must be less than %skb.' % max_size)
         except os.error:
             raise TweepError('Unable to access file')
 
@@ -723,7 +723,7 @@ class API(object):
         BOUNDARY = 'Tw3ePy'
         body = []
         body.append('--' + BOUNDARY)
-        body.append('Content-Disposition: form-data; name="image"; filename="%s"' % filename)
+        body.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (kwargs['content_name'] or 'image', filename))
         body.append('Content-Type: %s' % file_type)
         body.append('')
         body.append(fp.read())
@@ -740,3 +740,12 @@ class API(object):
 
         return headers, body
 
+    @staticmethod
+    def _pack_media(filename, max_size, *args, **kwargs):
+        """
+        " Pack media from file into multipart-formdata post body
+        " :photo_size_limit
+        " https://dev.twitter.com/docs/api/1/get/help/configuration
+        """
+        kwargs.update({'content_name': 'media[]'})
+        return API._pack_image(filename, max_size, *args, **kwargs)
